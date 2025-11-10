@@ -1,8 +1,11 @@
 import NextAuth from "next-auth";
+import type { DefaultSession } from "next-auth";
 import "next-auth/jwt";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import CredentialsProvider from "next-auth/providers/credentials";
+
+import Resend from "next-auth/providers/resend";
 //
 import Apple from "next-auth/providers/apple";
 // import Atlassian from "next-auth/providers/atlassian"
@@ -45,24 +48,23 @@ import { UnstorageAdapter } from "@auth/unstorage-adapter";
 import NeonAdapter from "@auth/neon-adapter";
 import { Pool } from "@neondatabase/serverless";
 
-import { PrismaAdapter } from "@auth/prisma-adapter"
+import { PrismaAdapter } from "@auth/prisma-adapter";
 
-const storage = createStorage({
-    driver: process.env.VERCEL
-        ? vercelKVDriver({
-              url: process.env.AUTH_KV_REST_API_URL,
-              token: process.env.AUTH_KV_REST_API_TOKEN,
-              env: false,
-          })
-        : memoryDriver(),
-});
+// const storage = createStorage({
+//     driver: process.env.VERCEL
+//         ? vercelKVDriver({
+//               url: process.env.AUTH_KV_REST_API_URL,
+//               token: process.env.AUTH_KV_REST_API_TOKEN,
+//               env: false,
+//           })
+//         : memoryDriver(),
+// });
 
 type Credentials = {
     email: string;
     name?: string;
     password: string;
 };
-
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function parseCredentials(raw: any): Credentials {
@@ -76,7 +78,6 @@ function parseCredentials(raw: any): Credentials {
     throw new Error("Credenciais inválidas");
 }
 
-
 export const { handlers, auth, signIn, signOut } = NextAuth(() => {
     const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
@@ -86,6 +87,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
         adapter: PrismaAdapter(prisma),
         providers: [
             // github,
+
+            Resend({
+                from: "noreply@kaizin.com.br",
+            }),
             CredentialsProvider({
                 name: "credentials",
                 credentials: {
@@ -114,6 +119,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
                                     create: {
                                         username: tempUsername,
                                         lowername: tempUsername.toLowerCase(),
+                                        name: creds.name ?? creds.email,
                                         bio: "",
                                         avatarUrl: "",
                                     },
@@ -148,23 +154,37 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
                 },
             }),
         ],
-        basePath: "/auth",
+        pages: {
+            signIn: "/login",
+            newUser: "/new-user",
+        },
         session: { strategy: "jwt" },
+
+        secret: process.env.AUTH_SECRET,
         callbacks: {
             authorized({ request, auth }) {
                 const { pathname } = request.nextUrl;
                 if (pathname === "/middleware-example") return !!auth;
                 return true;
             },
-            jwt({ token, trigger, session, account }) {
+            jwt({ token, trigger, session, account, user }) {
+                if (user && (user as any).id) token.id = (user as any).id;
+
                 if (trigger === "update") token.name = session.user.name;
                 if (account?.provider === "keycloak") {
                     return { ...token, accessToken: account.access_token };
                 }
+
                 return token;
             },
             async session({ session, token }) {
                 if (token?.accessToken) session.accessToken = token.accessToken;
+
+                const userId = (token as any).id ?? (token as any).sub;
+                if (userId) {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    (session.user as any).id = userId as string;
+                }
 
                 return session;
             },
@@ -174,13 +194,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
 });
 
 declare module "next-auth" {
-    interface Session {
+    interface Session extends DefaultSession {
         accessToken?: string;
+        // ensure session.user has an optional id
+        user?: {
+            id?: string;
+        } & DefaultSession["user"];
     }
 }
 
 declare module "next-auth/jwt" {
     interface JWT {
         accessToken?: string;
+        id?: string;
     }
 }

@@ -9,15 +9,18 @@ import {
     DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { SignIn, SignOut } from "./auth-components";
+import Link from "next/link";
 
 export default async function UserButton() {
+
     const session = await auth();
     if (!session?.user) return <SignIn />;
+
     return (
         <div className="flex items-center gap-2">
-            <span className="hidden text-sm sm:inline-flex">
-                {session.user.email}
-            </span>
+            <Link className="hidden text-sm sm:inline-flex" href="/account">
+                {session.user.name}
+            </Link>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button

@@ -14,13 +14,15 @@ datasource db {
 }
 
 model User {
-    id            Int       @id @default(autoincrement())
+    id            String       @id @default(uuid())
     name          String?
     password      String?
     email         String    @unique
     emailVerified DateTime?
     image         String?
     posts         Post[]
+    
+    Profile       Profile?
     accounts      Account[]
     sessions      Session[]
 
@@ -28,8 +30,28 @@ model User {
     updatedAt DateTime @updatedAt
 }
 
+model Profile {
+    id            String  @id
+    user          User    @relation(fields: [id], references: [id], onDelete: Cascade)
+    name          String?
+    bio           String?
+    username      String  @unique
+    lowername     String  @unique
+    avatarUrl     String?
+    pronouns      String?
+    site          String?
+    age           Int?
+    favoriteGenre String?
+
+    posts      Post[]
+
+    public    Boolean  @default(false)
+    verified  Boolean  @default(false)
+    updatedAt DateTime @default(now()) @updatedAt
+}
+
 model Account {
-    userId            Int
+    userId            String
     type              String
     provider          String
     providerAccountId String
@@ -40,18 +62,18 @@ model Account {
     scope             String?
     id_token          String?
     session_state     String?
-    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@id([provider, providerAccountId])
 }
 
 model Session {
-    id           Int      @id @default(autoincrement())
     sessionToken String   @unique
-    userId       Int
+    userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -59,14 +81,94 @@ model Session {
     updatedAt DateTime @updatedAt
 }
 
+model VerificationToken {
+    identifier String
+    token      String
+    expires    DateTime
+
+    @@id([identifier, token])
+}
+
+model Otp {
+    id          String   @id @default(uuid())
+    identifier  String
+    codeHash    String
+    purpose     String // "MAGIC_LINK" | "LOGIN_OTP" | "RESET_PASSWORD", opcional
+    created     DateTime @default(now())
+    expires     DateTime
+    consumed    Boolean  @default(false)
+    attempts    Int      @default(0)
+    maxAttempts Int      @default(5)
+
+    @@index([identifier])
+    @@index([expires])
+}
+
+// Optional for WebAuthn support
+// model Authenticator {
+//     credentialID         String  @unique
+//     userId               String
+//     providerAccountId    String
+//     credentialPublicKey  String
+//     counter              Int
+//     credentialDeviceType String
+//     credentialBackedUp   Boolean
+//     transports           String?
+
+//     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//     @@id([userId, credentialID])
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 model Post {
     id        Int     @id @default(autoincrement())
     title     String
     content   String?
     published Boolean @default(false)
-    authorId  Int
+    authorId  String
     author    User    @relation(fields: [authorId], references: [id])
 
+    // Optional relation to Profile so Profile.posts has an opposite field
+    profileId String?
+    profile   Profile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+    tags      Tag[]
+    color     String?
+    image     String?
+
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Tag {
+    id        Int      @id @default(autoincrement())
+    name      String   @unique
+    posts     Post[]
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
