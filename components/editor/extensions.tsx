@@ -50,6 +50,8 @@ import FileHandler from "@tiptap/extension-file-handler";
 
 import Youtube from "@tiptap/extension-youtube";
 
+import { SpotifyCard } from "@/components/editor/extensios/spotify-card-extensio";
+
 // /c:/code/blog-admin/components/editor/extensions.tsx
 // Simplified exports of common free tiptap extensions and a helper to build the editor's extensions array.
 
@@ -92,23 +94,30 @@ export function createExtensions(opts: EditorExtensionsOptions = {}): any[] {
                     class: "paragrafo pb-6",
                 },
             },
+            link: {
+                openOnClick: false,
+                autolink: true,
+                linkOnPaste: true,
+                defaultProtocol: "https",
+                protocols: ["http", "https", "mailto"],
+            },
         }),
         Superscript,
         Subscript,
-        InvisibleCharacters,
+        InvisibleCharacters.configure({
+            visible: false,
+        }),
         FileHandler,
         Youtube,
+        Code.configure({
+            HTMLAttributes: {
+                class: "codigo-inline",
+            },
+        }),
 
         Emoji.configure({
             emojis: gitHubEmojis,
             enableEmoticons: true,
-        }),
-        Link.configure({
-            openOnClick: false,
-            autolink: true,
-            linkOnPaste: true,
-            defaultProtocol: "https",
-            protocols: ["http", "https", "mailto"],
         }),
         CodeBlockLowlight.configure({ lowlight }),
         Highlight.configure({ multicolor: true }),
@@ -150,6 +159,9 @@ export function createExtensions(opts: EditorExtensionsOptions = {}): any[] {
         TextStyleKit,
         Typography,
 
+        // Custom Spotify card node
+        SpotifyCard,
+        // SpotifyLinkHandler
     ];
 
     return extensions;
@@ -183,4 +195,8 @@ export {
     Dropcursor,
     Gapcursor,
     HorizontalRule,
+    InvisibleCharacters,
+    FileHandler,
+    Youtube,
+    SpotifyCard,
 };

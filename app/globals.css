@@ -187,5 +187,19 @@ body {
     max-width: 100%;
     min-height: 100%;
     height: auto;
-    width: 100% ;
+    width: 100%;
+}
+
+/* Code and preformatted text styles */
+.tiptap code, .codigo-inline {
+    background-color: #e4d7f7;
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.95em;
+}
+
+.tiptap a {
+    /* color: var(--brand-primary); */
+    text-decoration: underline;
 }
