@@ -161,7 +161,6 @@ export function createExtensions(opts: EditorExtensionsOptions = {}): any[] {
 
         // Custom Spotify card node
         SpotifyCard,
-        // SpotifyLinkHandler
     ];
 
     return extensions;

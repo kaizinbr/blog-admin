@@ -11,195 +11,338 @@ import {
 
 import type { Editor } from "@tiptap/react";
 import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
+import EditorBtn from "@/components/editor/btns/editor-btn";
+import TableControls from "@/components/editor/btns/table-controls";
 
 export default function EditorBar({ editor }: { editor?: Editor | null }) {
     if (!editor) {
         return null; // or render a loading state
     }
 
-    const editorState = useEditorState({
-        editor,
-        selector: (ctx) => {
-            return {
-                isBold: ctx.editor.isActive("bold") ?? false,
-                canBold: ctx.editor.can().chain().toggleBold().run() ?? false,
+    // const editorState = useEditorState({
+    //     editor,
+    //     selector: (ctx) => {
+    //         return {
+    //             // marks
+    //             isBold: ctx.editor.isActive("bold") ?? false,
+    //             canBold: ctx.editor.can().chain().toggleBold().run() ?? false,
 
-                isItalic: ctx.editor.isActive("italic") ?? false,
-                canItalic:
-                    ctx.editor.can().chain().toggleItalic().run() ?? false,
+    //             isItalic: ctx.editor.isActive("italic") ?? false,
+    //             canItalic:
+    //                 ctx.editor.can().chain().toggleItalic().run() ?? false,
 
-                isStrike: ctx.editor.isActive("strike") ?? false,
-                canStrike:
-                    ctx.editor.can().chain().toggleStrike().run() ?? false,
+    //             isStrike: ctx.editor.isActive("strike") ?? false,
+    //             canStrike:
+    //                 ctx.editor.can().chain().toggleStrike().run() ?? false,
 
-                isUnderline: ctx.editor.isActive("underline") ?? false,
-                canUnderline:
-                    ctx.editor.can().chain().toggleUnderline().run() ?? false,
+    //             isUnderline: ctx.editor.isActive("underline") ?? false,
+    //             canUnderline:
+    //                 ctx.editor.can().chain().toggleUnderline().run() ?? false,
 
-                isCode: ctx.editor.isActive("code") ?? false,
-                canCode: ctx.editor.can().chain().toggleCode().run() ?? false,
+    //             isCode: ctx.editor.isActive("code") ?? false,
+    //             canCode: ctx.editor.can().chain().toggleCode().run() ?? false,
 
-                isHighlight: ctx.editor.isActive("highlight") ?? false,
-                canHighlight:
-                    ctx.editor.can().chain().toggleHighlight().run() ?? false,
+    //             isHighlight: ctx.editor.isActive("highlight") ?? false,
+    //             canHighlight:
+    //                 ctx.editor.can().chain().toggleHighlight().run() ?? false,
 
-                isAlignLeft: ctx.editor.isActive("alignLeft") ?? false,
-                canAlignLeft:
-                    ctx.editor.can().chain().setTextAlign("left").run() ??
-                    false,
+    //             isSubscript: ctx.editor.isActive("subscript") ?? false,
+    //             canSubscript:
+    //                 ctx.editor.can().chain().toggleSubscript().run() ?? false,
+    //             isSuperscript: ctx.editor.isActive("superscript") ?? false,
+    //             canSuperscript:
+    //                 ctx.editor.can().chain().toggleSuperscript().run() ?? false,
 
-                isAlignCenter: ctx.editor.isActive("alignCenter") ?? false,
-                canAlignCenter:
-                    ctx.editor.can().chain().setTextAlign("center").run() ??
-                    false,
+    //             isAlignLeft: ctx.editor.isActive("alignLeft") ?? false,
+    //             canAlignLeft:
+    //                 ctx.editor.can().chain().setTextAlign("left").run() ??
+    //                 false,
 
-                isAlignRight: ctx.editor.isActive("alignRight") ?? false,
-                canAlignRight:
-                    ctx.editor.can().chain().setTextAlign("right").run() ??
-                    false,
+    //             isAlignCenter: ctx.editor.isActive("alignCenter") ?? false,
+    //             canAlignCenter:
+    //                 ctx.editor.can().chain().setTextAlign("center").run() ??
+    //                 false,
 
-                isAlignJustify: ctx.editor.isActive("alignJustify") ?? false,
-                canAlignJustify:
-                    ctx.editor.can().chain().setTextAlign("justify").run() ??
-                    false,
-            };
-        },
-    });
+    //             isAlignRight: ctx.editor.isActive("alignRight") ?? false,
+    //             canAlignRight:
+    //                 ctx.editor.can().chain().setTextAlign("right").run() ??
+    //                 false,
+
+    //             isAlignJustify: ctx.editor.isActive("alignJustify") ?? false,
+    //             canAlignJustify:
+    //                 ctx.editor.can().chain().setTextAlign("justify").run() ??
+    //                 false,
+
+    //             //nodes
+    //             isBlockquote: ctx.editor.isActive("blockquote") ?? false,
+    //             canBlockquote:
+    //                 ctx.editor.can().chain().toggleBlockquote().run() ?? false,
+    //         };
+    //     },
+    // });
 
     return (
         <div
             className={`
             flex items-center border-b border-b-slate-200 bg-white px-4 py-2 sm:px-6
-            gap-2
+            gap-2 flex-wrap
         `}
         >
-            <button
-                className={`
-                    icon-button p-2 rounded-sm hover:bg-slate-100
-                    ${editorState.isBold ? "is-active bg-slate-100" : ""}
-                `}
-                onClick={() => editor.chain().focus().toggleBold().run()}
-                disabled={!editorState.canBold}
-            >
-                <Bold className="size-5" />
-            </button>
+            <EditorBtn
+                editor={editor}
+                icon={<Bold className="size-5" />}
+                title="Negrito"
+                command={(ed) => ed.chain().focus().toggleBold().run()}
+                isActive={(ed) => ed.isActive("bold")}
+                canExecute={(ed) => ed.can().chain().toggleBold().run()}
+            />
 
-            <button
-                className={`
-                    icon-button p-2 rounded-sm hover:bg-slate-100
-                    ${editorState.isItalic ? "is-active bg-slate-100" : ""}
-                `}
-                onClick={() => editor.chain().focus().toggleItalic().run()}
-                disabled={!editorState.canItalic}
-            >
-                <Italic className="size-5" />
-            </button>
+            <EditorBtn
+                editor={editor}
+                icon={<Italic className="size-5" />}
+                title="Itálico"
+                command={(ed) => ed.chain().focus().toggleItalic().run()}
+                isActive={(ed) => ed.isActive("italic")}
+                canExecute={(ed) => ed.can().chain().toggleItalic().run()}
+            />
 
-            <button
-                className={`
-                    icon-button p-2 rounded-sm hover:bg-slate-100
-                    ${editorState.isUnderline ? "is-active bg-slate-100" : ""}
-                `}
-                onClick={() => editor.chain().focus().toggleUnderline().run()}
-                disabled={!editorState.canUnderline}
-            >
-                <Underline className="size-5" />
-            </button>
-            <button
-                className={`
-                    icon-button p-2 rounded-sm hover:bg-slate-100
-                    ${editorState.isStrike ? "is-active bg-slate-100" : ""}
-                `}
-                onClick={() => editor.chain().focus().toggleStrike().run()}
-                disabled={!editorState.canStrike}
-            >
-                <Strikethrough className="size-5" />
-            </button>
-            <div className="border-l h-6 ml-2"></div>
+            <EditorBtn
+                editor={editor}
+                icon={<Underline className="size-5" />}
+                title="Sublinhado"
+                command={(ed) => ed.chain().focus().toggleUnderline().run()}
+                isActive={(ed) => ed.isActive("underline")}
+                canExecute={(ed) => ed.can().chain().toggleUnderline().run()}
+            />
 
-            <button
-                className={`
-                    icon-button p-2 rounded-sm hover:bg-slate-100
-                    ${editorState.isAlignLeft ? "is-active bg-slate-100" : ""}
-                `}
-                onClick={() =>
-                    editor.chain().focus().setTextAlign("left").run()
-                }
-                disabled={!editorState.canAlignLeft}
-            >
-                <AlignLeft className="size-5" />
-            </button>
-
-            <button
-                className={`
-                    icon-button p-2 rounded-sm hover:bg-slate-100
-                    ${editorState.isAlignCenter ? "is-active bg-slate-100" : ""}
-                `}
-                onClick={() =>
-                    editor.chain().focus().setTextAlign("center").run()
-                }
-                disabled={!editorState.canAlignCenter}
-            >
-                <AlignCenter className="size-5" />
-            </button>
-
-            <button
-                className={`
-                    icon-button p-2 rounded-sm hover:bg-slate-100
-                    ${editorState.isAlignRight ? "is-active bg-slate-100" : ""}
-                `}
-                onClick={() =>
-                    editor.chain().focus().setTextAlign("right").run()
-                }
-                disabled={!editorState.canAlignRight}
-            >
-                <AlignRight className="size-5" />
-            </button>
-
-            <button
-                className={`
-                    icon-button p-2 rounded-sm hover:bg-slate-100
-                    ${
-                        editorState.isAlignJustify
-                            ? "is-active bg-slate-100"
-                            : ""
-                    }
-                `}
-                onClick={() =>
-                    editor.chain().focus().setTextAlign("justify").run()
-                }
-                disabled={!editorState.canAlignJustify}
-            >
-                <AlignJustify className="size-5" />
-            </button>
+            <EditorBtn
+                editor={editor}
+                icon={<Strikethrough className="size-5" />}
+                title="Tachado"
+                command={(ed) => ed.chain().focus().toggleStrike().run()}
+                isActive={(ed) => ed.isActive("strike")}
+                canExecute={(ed) => ed.can().chain().toggleStrike().run()}
+            />
 
             <div className="border-l h-6 ml-2"></div>
 
-            <button onClick={() => editor.commands.toggleInvisibleCharacters()}>
-                caracteres invisiveis
-            </button>
-            <button
-                className={`
-                    icon-button p-2 rounded-sm hover:bg-slate-100
-                    ${editorState.isCode ? "is-active bg-slate-100" : ""}
-                `}
-                onClick={() => editor.chain().focus().toggleCode().run()}
-                disabled={!editorState.canCode}
-            >
-                código
-            </button>
-            <button
-                className={`
-                    icon-button p-2 rounded-sm hover:bg-slate-100
-                    ${editorState.isHighlight ? "is-active bg-slate-100" : ""}
-                `}
-                onClick={() => editor.chain().focus().toggleHighlight().run()}
-                disabled={!editorState.canHighlight}
-            >
-                highlight
-            </button>
+            <EditorBtn
+                editor={editor}
+                icon={<AlignLeft className="size-5" />}
+                title="Alinhar à esquerda"
+                command={(ed) => ed.chain().focus().setTextAlign("left").run()}
+                isActive={(ed) => ed.isActive({ textAlign: "left" })}
+                canExecute={(ed) => ed.can().chain().setTextAlign("left").run()}
+            />
 
+            <EditorBtn
+                editor={editor}
+                icon={<AlignCenter className="size-5" />}
+                title="Centralizar"
+                command={(ed) =>
+                    ed.chain().focus().setTextAlign("center").run()
+                }
+                isActive={(ed) => ed.isActive({ textAlign: "center" })}
+                canExecute={(ed) =>
+                    ed.can().chain().setTextAlign("center").run()
+                }
+            />
 
+            <EditorBtn
+                editor={editor}
+                icon={<AlignRight className="size-5" />}
+                title="Alinhar à direita"
+                command={(ed) => ed.chain().focus().setTextAlign("right").run()}
+                isActive={(ed) => ed.isActive({ textAlign: "right" })}
+                canExecute={(ed) =>
+                    ed.can().chain().setTextAlign("right").run()
+                }
+            />
+
+            <EditorBtn
+                editor={editor}
+                icon={<AlignJustify className="size-5" />}
+                title="Justificar"
+                command={(ed) =>
+                    ed.chain().focus().setTextAlign("justify").run()
+                }
+                isActive={(ed) => ed.isActive({ textAlign: "justify" })}
+                canExecute={(ed) =>
+                    ed.can().chain().setTextAlign("justify").run()
+                }
+            />
+
+            <div className="border-l h-6 ml-2"></div>
+
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="Invisiveis"
+                title="Caracteres invisíveis"
+                command={(ed) => ed.commands.toggleInvisibleCharacters()}
+                isActive={() => false}
+                canExecute={() => true}
+            />
+
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="Código"
+                title="Código"
+                command={(ed) => ed.chain().focus().toggleCode().run()}
+                isActive={(ed) => ed.isActive("code")}
+                canExecute={(ed) => ed.can().chain().toggleCode().run()}
+            />
+
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="Highlight"
+                title="Highlight"
+                command={(ed) => ed.chain().focus().toggleHighlight().run()}
+                isActive={(ed) => ed.isActive("highlight")}
+                canExecute={(ed) => ed.can().chain().toggleHighlight().run()}
+            />
+
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="Subscript"
+                title="Subscript"
+                command={(ed) => ed.chain().focus().toggleSubscript().run()}
+                isActive={(ed) => ed.isActive("subscript")}
+                canExecute={(ed) => ed.can().chain().toggleSubscript().run()}
+            />
+
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="Superscript"
+                title="Superscript"
+                command={(ed) => ed.chain().focus().toggleSuperscript().run()}
+                isActive={(ed) => ed.isActive("superscript")}
+                canExecute={(ed) => ed.can().chain().toggleSuperscript().run()}
+            />
+
+            <div className="border-l h-6 ml-2"></div>
+
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="Limpar"
+                title="Clear Formatting"
+                command={(ed) =>
+                    ed.chain().focus().clearNodes().unsetAllMarks().run()
+                }
+                isActive={() => false}
+                canExecute={(ed) =>
+                    ed.can().chain().clearNodes().unsetAllMarks().run()
+                }
+            />
+
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="blockquote"
+                title="Blockquote"
+                command={(ed) => ed.chain().focus().toggleBlockquote().run()}
+                isActive={(ed) => ed.isActive("blockquote")}
+                canExecute={(ed) => ed.can().chain().toggleBlockquote().run()}
+            />
+
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="Lista de Tarefas"
+                title="Lista de Tarefas"
+                command={(ed) => ed.chain().focus().toggleTaskList().run()}
+                isActive={(ed) => ed.isActive("taskList")}
+                canExecute={(ed) => ed.can().chain().toggleTaskList().run()}
+            />
+
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="lista de itens"
+                title="Lista de Itens"
+                command={(ed) => ed.chain().focus().toggleBulletList().run()}
+                isActive={(ed) => ed.isActive("bulletList")}
+                canExecute={(ed) => ed.can().chain().toggleBulletList().run()}
+            />
+
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="Lista numerada"
+                title="Lista numerada"
+                command={(ed) => ed.chain().focus().toggleOrderedList().run()}
+                isActive={(ed) => ed.isActive("orderedList")}
+                canExecute={(ed) => ed.can().chain().toggleOrderedList().run()}
+            />
+
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="codeblock"
+                title="Code Block"
+                command={(ed) => ed.chain().focus().toggleCodeBlock().run()}
+                isActive={(ed) => ed.isActive("codeBlock")}
+                canExecute={(ed) => ed.can().chain().toggleCodeBlock().run()}
+            />
+
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="quebra de linha"
+                title="Hard Break"
+                command={(ed) => ed.chain().focus().setHardBreak().run()}
+                isActive={(ed) => ed.isActive("hardBreak")}
+                canExecute={(ed) => ed.can().chain().setHardBreak().run()}
+            />
+
+            <div className="border-l h-6 ml-2"></div>
+
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="titulo 1"
+                title="Titulo 1"
+                command={(ed) => ed.chain().focus().toggleHeading({ level: 1 }).run()}
+                isActive={(ed) => ed.isActive("heading", { level: 1 })}
+                canExecute={(ed) => ed.can().chain().toggleHeading({ level: 1 }).run()}
+            />
+
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="titulo 2"
+                title="Titulo 2"
+                command={(ed) => ed.chain().focus().toggleHeading({ level: 2 }).run()}
+                isActive={(ed) => ed.isActive("heading", { level: 2 })}
+                canExecute={(ed) => ed.can().chain().toggleHeading({ level: 2 }).run()}
+            />
+
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="titulo 3"
+                title="Titulo 3"
+                command={(ed) => ed.chain().focus().toggleHeading({ level: 3 }).run()}
+                isActive={(ed) => ed.isActive("heading", { level: 3 })}
+                canExecute={(ed) => ed.can().chain().toggleHeading({ level: 3 }).run()}
+            />
+            
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="linha horizontal"
+                title="Horizontal Rule"
+                command={(ed) => ed.chain().focus().setHorizontalRule().run()}
+                isActive={(ed) => ed.isActive("horizontalRule")}
+                canExecute={(ed) => ed.can().chain().setHorizontalRule().run()}
+            />
+
+            <TableControls editor={editor} />
         </div>
     );
 }
