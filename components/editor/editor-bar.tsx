@@ -307,9 +307,13 @@ export default function EditorBar({ editor }: { editor?: Editor | null }) {
                 icon={null}
                 label="titulo 1"
                 title="Titulo 1"
-                command={(ed) => ed.chain().focus().toggleHeading({ level: 1 }).run()}
+                command={(ed) =>
+                    ed.chain().focus().toggleHeading({ level: 1 }).run()
+                }
                 isActive={(ed) => ed.isActive("heading", { level: 1 })}
-                canExecute={(ed) => ed.can().chain().toggleHeading({ level: 1 }).run()}
+                canExecute={(ed) =>
+                    ed.can().chain().toggleHeading({ level: 1 }).run()
+                }
             />
 
             <EditorBtn
@@ -317,9 +321,13 @@ export default function EditorBar({ editor }: { editor?: Editor | null }) {
                 icon={null}
                 label="titulo 2"
                 title="Titulo 2"
-                command={(ed) => ed.chain().focus().toggleHeading({ level: 2 }).run()}
+                command={(ed) =>
+                    ed.chain().focus().toggleHeading({ level: 2 }).run()
+                }
                 isActive={(ed) => ed.isActive("heading", { level: 2 })}
-                canExecute={(ed) => ed.can().chain().toggleHeading({ level: 2 }).run()}
+                canExecute={(ed) =>
+                    ed.can().chain().toggleHeading({ level: 2 }).run()
+                }
             />
 
             <EditorBtn
@@ -327,11 +335,15 @@ export default function EditorBar({ editor }: { editor?: Editor | null }) {
                 icon={null}
                 label="titulo 3"
                 title="Titulo 3"
-                command={(ed) => ed.chain().focus().toggleHeading({ level: 3 }).run()}
+                command={(ed) =>
+                    ed.chain().focus().toggleHeading({ level: 3 }).run()
+                }
                 isActive={(ed) => ed.isActive("heading", { level: 3 })}
-                canExecute={(ed) => ed.can().chain().toggleHeading({ level: 3 }).run()}
+                canExecute={(ed) =>
+                    ed.can().chain().toggleHeading({ level: 3 }).run()
+                }
             />
-            
+
             <EditorBtn
                 editor={editor}
                 icon={null}
@@ -341,8 +353,131 @@ export default function EditorBar({ editor }: { editor?: Editor | null }) {
                 isActive={(ed) => ed.isActive("horizontalRule")}
                 canExecute={(ed) => ed.can().chain().setHorizontalRule().run()}
             />
+            <br />
 
-            <TableControls editor={editor} />
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="desfazer"
+                title="undo"
+                command={(ed) => ed.chain().focus().undo().run()}
+                isActive={(ed) => ed.isActive("undo")}
+                canExecute={(ed) => ed.can().chain().undo().run()}
+            />
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="refazer"
+                title="redo"
+                command={(ed) => ed.chain().focus().redo().run()}
+                isActive={(ed) => ed.isActive("redo")}
+                canExecute={(ed) => ed.can().chain().redo().run()}
+            />
+
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="imagem"
+                title="imagem"
+                command={(ed) => ed.chain().focus().setImageUpload().run()}
+                isActive={(ed) => ed.isActive("imageUpload")}
+                canExecute={(ed) => ed.can().chain().setImageUpload().run()}
+            />
+
+            
+            
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="imagem left"
+                title="imagem left"
+                command={(ed) => ed.chain().focus().setImageBlockAlign("left").run()}
+                isActive={(ed) => ed.isActive("imageBlockAlign", { align: "left" })}
+                canExecute={(ed) => ed.can().chain().setImageBlockAlign("left").run()}
+            />
+
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="imagem center"
+                title="imagem center"
+                command={(ed) => ed.chain().focus().setImageBlockAlign("center").run()}
+                isActive={(ed) => ed.isActive("imageBlockAlign", { align: "center" })}
+                canExecute={(ed) => ed.can().chain().setImageBlockAlign("center").run()}
+            />
+            <EditorBtn
+                editor={editor}
+                icon={null}
+                label="imagem right"
+                title="imagem right"
+                command={(ed) => ed.chain().focus().setImageBlockAlign("right").run()}
+                isActive={(ed) => ed.isActive("imageBlockAlign", { align: "right" })}
+                canExecute={(ed) => ed.can().chain().setImageBlockAlign("right").run()}
+            />
+            {/* <EditorBtn
+                editor={editor}
+                icon={null}
+                label="excluir imagem"
+                title="excluir imagem"
+                command={(ed) => ed.chain().focus().deleteImageBlock().run()}
+                isActive={(ed) => ed.isActive("imageBlockAlign", { align: "right" })}
+                canExecute={(ed) => ed.can().chain().deleteImageBlock().run()}
+            /> */}
+
+            <select
+                name="font-family"
+                id="font-family"
+                onChange={(e) => {
+                    const font = e.target.value;
+                    if (font === "unset") {
+                        editor.chain().focus().unsetFontFamily().run();
+                    } else {
+                        editor
+                            .chain()
+                            .focus()
+                            .setMark("textStyle", { fontFamily: font })
+                            .run();
+                    }
+                }}
+                defaultValue=""
+            >
+                <option value="unset">Fonte</option>
+                <option value="arial">Arial</option>
+                <option value="times-new-roman">Times New Roman</option>
+                <option value="courier-new">Courier New</option>
+                <option value="georgia">Georgia</option>
+                <option value="verdana">Verdana</option>
+            </select>
+
+            <select
+                name="font-size"
+                id="font-size"
+                onChange={(e) => {
+                    const size = e.target.value;
+                    if (size === "unset") {
+                        editor.chain().focus().unsetFontSize().run();
+                    } else {
+                        editor
+                            .chain()
+                            .focus()
+                            .setMark("textStyle", { fontSize: size })
+                            .run();
+                    }
+                }}
+                defaultValue=""
+            >
+                <option value="unset">Tamanho</option>
+                <option value="12px">12</option>
+                <option value="14px">14</option>
+                <option value="16px">16</option>
+                <option value="18px">18</option>
+                <option value="20px">20</option>
+                <option value="24px">24</option>
+                <option value="28px">28</option>
+                <option value="32px">32</option>
+            </select>
+
+            {/* <TableControls editor={editor} /> */}
         </div>
     );
 }

@@ -1,6 +1,4 @@
-import { Extension } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
-import Document from "@tiptap/extension-document";
 import Emoji, { gitHubEmojis } from "@tiptap/extension-emoji";
 import Bold from "@tiptap/extension-bold";
 import Italic from "@tiptap/extension-italic";
@@ -8,15 +6,7 @@ import Strike from "@tiptap/extension-strike";
 import Underline from "@tiptap/extension-underline";
 import Code from "@tiptap/extension-code";
 import Highlight from "@tiptap/extension-highlight";
-import {
-    FontFamily,
-    FontSize,
-    BackgroundColor,
-    Color,
-    TextStyleKit,
-    LineHeight,
-    TextStyle,
-} from "@tiptap/extension-text-style";
+import { TextStyleKit } from "@tiptap/extension-text-style";
 import Typography from "@tiptap/extension-typography";
 
 import Subscript from "@tiptap/extension-subscript";
@@ -29,7 +19,7 @@ import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
 import HardBreak from "@tiptap/extension-hard-break";
 import Heading from "@tiptap/extension-heading";
-import { UndoRedo, Placeholder } from "@tiptap/extensions";
+import { Placeholder } from "@tiptap/extensions";
 import Blockquote from "@tiptap/extension-blockquote";
 import BulletList from "@tiptap/extension-bullet-list";
 import OrderedList from "@tiptap/extension-ordered-list";
@@ -48,23 +38,22 @@ import InvisibleCharacters from "@tiptap/extension-invisible-characters";
 
 import FileHandler from "@tiptap/extension-file-handler";
 
+import { ImageUpload } from "@/components/editor/extensios/ImageUpload";
+import { ImageBlock } from "@/components/editor/extensios/ImageBlock";
+
+import { uploadImageToServer } from "@/lib/upload";
+import { ResizableImage } from 'tiptap-extension-resizable-image';
+
 import Youtube from "@tiptap/extension-youtube";
 
 import { SpotifyCard } from "@/components/editor/extensios/spotify-card-extensio";
 
-// /c:/code/blog-admin/components/editor/extensions.tsx
-// Simplified exports of common free tiptap extensions and a helper to build the editor's extensions array.
 
-// Optional lowlight import left to the integrator (syntax highlighting engine).
-// import { lowlight } from 'lowlight'
-
-// Basic shape for builder options
 export type EditorExtensionsOptions = {
     placeholder?: string;
     characterLimit?: number;
-    textAlignTypes?: Array<string>; // default ['heading', 'paragraph']
-    codeLowlight?: any; // pass lowlight if you want syntax highlighting
-    // add other toggles/flags as needed
+    textAlignTypes?: Array<string>;
+    codeLowlight?: any;
 };
 
 // Initialize lowlight with all languages
@@ -107,7 +96,6 @@ export function createExtensions(opts: EditorExtensionsOptions = {}): any[] {
         InvisibleCharacters.configure({
             visible: false,
         }),
-        FileHandler,
         Youtube,
         Code.configure({
             HTMLAttributes: {
@@ -123,7 +111,47 @@ export function createExtensions(opts: EditorExtensionsOptions = {}): any[] {
         Highlight.configure({ multicolor: true }),
 
         // Media
-        Image,
+        ImageBlock,
+        ImageUpload,
+        ResizableImage,
+
+        // File handling (drag-n-drop, paste)
+
+        FileHandler.configure({
+            allowedMimeTypes: [
+                "image/png",
+                "image/jpeg",
+                "image/gif",
+                "image/webp",
+            ],
+            onDrop: (currentEditor, files, pos) => {
+                files.forEach(async (file) => {
+                    const url = await uploadImageToServer(file);
+                    console.log(file, url);
+
+                    currentEditor
+                        .chain()
+                        .setImageBlockAt({ pos, src: url ?? "" })
+                        .focus()
+                        .run();
+                });
+            },
+            onPaste: (currentEditor, files) => {
+                files.forEach(async (file) => {
+                    const url = await uploadImageToServer(file);
+                    console.log(file, url);
+
+                    return currentEditor
+                        .chain()
+                        .setImageBlockAt({
+                            pos: currentEditor.state.selection.anchor,
+                            src: url ?? "",
+                        })
+                        .focus()
+                        .run();
+                });
+            },
+        }),
 
         // Cursor helpers
         Dropcursor,
@@ -133,8 +161,6 @@ export function createExtensions(opts: EditorExtensionsOptions = {}): any[] {
         TextAlign.configure({
             types: textAlignTypes,
         }),
-
-        // Text style utilities (optional imports removed if not installed)
 
         // UX helpers
         Placeholder.configure({
