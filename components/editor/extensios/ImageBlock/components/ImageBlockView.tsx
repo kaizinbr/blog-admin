@@ -29,6 +29,26 @@ export const ImageBlockView = (props: ImageBlockViewProps) => {
         node.attrs.align === "center" && "mx-auto"
     );
 
+    useEffect(() => {
+        const check = () => {
+            try {
+                // simpler: use editor.isActive for this node type + src
+                const active = editor.isActive("imageBlock", { src: node.attrs.src });
+                setIsSelected(active);
+            } catch (e) {
+                setIsSelected(false);
+            }
+        };
+
+        check();
+        editor.on("selectionUpdate", check);
+        editor.on("transaction", check);
+        return () => {
+            editor.off("selectionUpdate", check);
+            editor.off("transaction", check);
+        };
+    }, [editor, getPos, node.attrs.src]);
+
     const onClick = useCallback(() => {
         editor.commands.setNodeSelection(getPos());
     }, [getPos, editor.commands]);

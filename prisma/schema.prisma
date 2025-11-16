@@ -14,17 +14,17 @@ datasource db {
 }
 
 model User {
-    id            String       @id @default(uuid())
+    id            String    @id @default(uuid())
     name          String?
     password      String?
     email         String    @unique
     emailVerified DateTime?
     image         String?
     posts         Post[]
-    
-    Profile       Profile?
-    accounts      Account[]
-    sessions      Session[]
+
+    Profile  Profile?
+    accounts Account[]
+    sessions Session[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -43,7 +43,7 @@ model Profile {
     age           Int?
     favoriteGenre String?
 
-    posts      Post[]
+    posts Post[]
 
     public    Boolean  @default(false)
     verified  Boolean  @default(false)
@@ -120,35 +120,13 @@ model Otp {
 //     @@id([userId, credentialID])
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 model Post {
-    id        Int     @id @default(autoincrement())
+    id        String  @id @default(uuid())
+    shorten   String  @unique
     title     String
-    content   String?
+    content   Json
     published Boolean @default(false)
+    raw       String?
     authorId  String
     author    User    @relation(fields: [authorId], references: [id])
 
@@ -156,10 +134,9 @@ model Post {
     profileId String?
     profile   Profile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-    tags      Tag[]
-    color     String?
-    image     String?
-
+    tags  Tag[]
+    color String?
+    image String?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

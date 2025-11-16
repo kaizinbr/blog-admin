@@ -62,9 +62,14 @@ export default function EditorBtn({
             title={title ?? label}
             onClick={handleClick}
             disabled={!state.enabled}
-            className={`icon-button p-2 rounded-sm hover:bg-slate-100 ${
-                state.active ? "is-active bg-slate-100" : ""
-            } ${className}`}
+            className={`
+                icon-button p-2 rounded-lg hover:bg-slate-100 
+                cursor-pointer disabled:cursor-not-allowed
+                disabled:opacity-50
+                transition-colors duration-200
+                ${state.active ? "is-active bg-slate-100" : ""} 
+                ${className}
+            `}
         >
             {icon ?? label}
         </button>

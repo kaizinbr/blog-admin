@@ -113,7 +113,7 @@ export function createExtensions(opts: EditorExtensionsOptions = {}): any[] {
         // Media
         ImageBlock,
         ImageUpload,
-        ResizableImage,
+        // ResizableImage,
 
         // File handling (drag-n-drop, paste)
 
