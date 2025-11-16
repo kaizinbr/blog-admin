@@ -1,124 +1,74 @@
-import { BubbleMenu as BaseBubbleMenu } from "@tiptap/react";
-import React, { useCallback, useRef } from "react";
-import { Instance, sticky } from "tippy.js";
-import { v4 as uuid } from "uuid";
+import type { Editor } from "@tiptap/react";
+import EditorBtn from "@/components/editor/btns/editor-btn";
+import { ImageLeftIcon, ImageCenterIcon, ImageRightIcon } from "@/components/editor/extensios/ImageBlock/components/btns";
 
-import { Toolbar } from "../../../components/ui/Toolbar";
-import { Icon } from "../../../components/ui/Icon";
-import { ImageBlockWidth } from "./ImageBlockWidth";
-import { MenuProps } from "../../../components/menus/types";
-import { getRenderContainer } from "../../../lib/utils";
-
-export const ImageBlockMenu = ({
-    editor,
-    appendTo,
-}: MenuProps): JSX.Element => {
-    const menuRef = useRef<HTMLDivElement>(null);
-    const tippyInstance = useRef<Instance | null>(null);
-
-    const getReferenceClientRect = useCallback(() => {
-        const renderContainer = getRenderContainer(editor, "node-imageBlock");
-        const rect =
-            renderContainer?.getBoundingClientRect() ||
-            new DOMRect(-1000, -1000, 0, 0);
-
-        return rect;
-    }, [editor]);
-
-    const shouldShow = useCallback(() => {
-        const isActive = editor.isActive("imageBlock");
-
-        return isActive;
-    }, [editor]);
-
-    const onAlignImageLeft = useCallback(() => {
-        editor
-            .chain()
-            .focus(undefined, { scrollIntoView: false })
-            .setImageBlockAlign("left")
-            .run();
-    }, [editor]);
-
-    const onAlignImageCenter = useCallback(() => {
-        editor
-            .chain()
-            .focus(undefined, { scrollIntoView: false })
-            .setImageBlockAlign("center")
-            .run();
-    }, [editor]);
-
-    const onAlignImageRight = useCallback(() => {
-        editor
-            .chain()
-            .focus(undefined, { scrollIntoView: false })
-            .setImageBlockAlign("right")
-            .run();
-    }, [editor]);
-
-    const onWidthChange = useCallback(
-        (value: number) => {
-            editor
-                .chain()
-                .focus(undefined, { scrollIntoView: false })
-                .setImageBlockWidth(value)
-                .run();
-        },
-        [editor],
-    );
+export const ImageBlockMenu = ({ editor }: { editor: Editor }) => {
+    if (!editor) return null;
 
     return (
-        <BaseBubbleMenu
-            editor={editor}
-            pluginKey={`imageBlockMenu-${uuid()}`}
-            shouldShow={shouldShow}
-            updateDelay={0}
-            tippyOptions={{
-                offset: [0, 8],
-                popperOptions: {
-                    modifiers: [{ name: "flip", enabled: false }],
-                },
-                getReferenceClientRect,
-                onCreate: (instance: Instance) => {
-                    tippyInstance.current = instance;
-                },
-                appendTo: () => {
-                    return appendTo?.current;
-                },
-                plugins: [sticky],
-                sticky: "popper",
-            }}
-        >
-            <Toolbar.Wrapper shouldShowContent={shouldShow()} ref={menuRef}>
-                <div className="flex w-full justify-center">
-                    <Toolbar.Button
-                        tooltip="Align image left"
-                        active={editor.isActive("imageBlock", { align: "left" })}
-                        onClick={onAlignImageLeft}
-                    >
-                        <Icon name="AlignHorizontalDistributeStart" />
-                    </Toolbar.Button>
-                    <Toolbar.Button
-                        tooltip="Align image center"
-                        active={editor.isActive("imageBlock", { align: "center" })}
-                        onClick={onAlignImageCenter}
-                    >
-                        <Icon name="AlignHorizontalDistributeCenter" />
-                    </Toolbar.Button>
-                    <Toolbar.Button
-                        tooltip="Align image right"
-                        active={editor.isActive("imageBlock", { align: "right" })}
-                        onClick={onAlignImageRight}
-                    >
-                        <Icon name="AlignHorizontalDistributeEnd" />
-                    </Toolbar.Button>
-                </div>
-                {/* <Toolbar.Divider /> */}
-                <ImageBlockWidth
-                    onChange={onWidthChange}
-                    value={parseInt(editor.getAttributes("imageBlock").width)}
+            <div className="flex gap-1 px-2">
+
+                <EditorBtn
+                    editor={editor}
+                    icon={<ImageLeftIcon className="size-4" />}
+                    label="imagem left"
+                    title="imagem left"
+                    command={(ed) =>
+                        ed.chain().focus().setImageBlockAlign("left").run()
+                    }
+                    isActive={(ed) =>
+                        ed.isActive("imageBlockAlign", { align: "left" })
+                    }
+                    canExecute={(ed) =>
+                        ed.can().chain().setImageBlockAlign("left").run()
+                    }
                 />
-            </Toolbar.Wrapper>
-        </BaseBubbleMenu>
+                <EditorBtn
+                    editor={editor}
+                    icon={<ImageCenterIcon className="size-4" />}
+                    label="imagem center"
+                    title="imagem center"
+                    command={(ed) =>
+                        ed.chain().focus().setImageBlockAlign("center").run()
+                    }
+                    isActive={(ed) =>
+                        ed.isActive("imageBlockAlign", { align: "center" })
+                    }
+                    canExecute={(ed) =>
+                        ed.can().chain().setImageBlockAlign("center").run()
+                    }
+                />
+                <EditorBtn
+                    editor={editor}
+                    icon={<ImageRightIcon className="size-4" />}
+                    label="imagem right"
+                    title="imagem right"
+                    command={(ed) =>
+                        ed.chain().focus().setImageBlockAlign("right").run()
+                    }
+                    isActive={(ed) =>
+                        ed.isActive("imageBlockAlign", { align: "right" })
+                    }
+                    canExecute={(ed) =>
+                        ed.can().chain().setImageBlockAlign("right").run()
+                    }
+                />
+                {/* <EditorBtn
+                    editor={editor}
+                    icon={null}
+                    label="excluir imagem"
+                    title="excluir imagem"
+                    command={(ed) =>
+                        ed.chain().focus().deleteImageBlock().run()
+                    }
+                    isActive={(ed) =>
+                        ed.isActive("imageBlockAlign", { align: "right" })
+                    }
+                    canExecute={(ed) =>
+                        ed.can().chain().deleteImageBlock().run()
+                    }
+                /> */}
+            </div>
     );
 };
 

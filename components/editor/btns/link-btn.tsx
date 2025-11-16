@@ -3,7 +3,7 @@ import { Popover, Text, Button, Input, Group } from "@mantine/core";
 import { Link } from "lucide-react";
 import NextLink from "next/link";
 import { useState, useEffect } from "react";
-import { CornerDownLeft, Trash, ExternalLink } from "lucide-react";
+import { CornerDownLeft, Unlink, ExternalLink } from "lucide-react";
 
 import type { Editor } from "@tiptap/react";
 
@@ -85,10 +85,10 @@ export default function LinkBtn({ editor }: { editor?: Editor | null }) {
     return (
         <Popover
             width={334}
-            position="bottom"
-            onClose={setOpened.bind(null, false)}
             withArrow
             shadow="md"
+            position="bottom"
+            onClose={setOpened.bind(null, false)}
             clickOutsideEvents={["mouseup", "touchend"]}
             classNames={{
                 dropdown: "p-2! rounded-lg! border border-slate-300",
@@ -143,7 +143,7 @@ export default function LinkBtn({ editor }: { editor?: Editor | null }) {
                             title="Remove link"
                             disabled={!linkUrl}
                         >
-                            <Trash className="text-red-600" size={16} />
+                            <Unlink className="text-red-600" size={16} />
                         </button>
                         <NextLink
                             href={`https://${linkUrl.replace(

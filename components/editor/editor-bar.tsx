@@ -14,10 +14,14 @@ import {
     Subscript,
     Superscript,
     RemoveFormatting,
-    Link,
     ListIcon,
     ListOrdered, 
-    ListChecks
+    ListChecks, 
+    TextWrap,
+    Pilcrow,
+    Quote,
+    FileCode,
+    Image
 } from "lucide-react";
 
 import type { Editor } from "@tiptap/react";
@@ -346,7 +350,7 @@ export default function EditorBar({ editor }: { editor?: Editor | null }) {
             <div className="flex gap-1 px-2">
                 <EditorBtn
                     editor={editor}
-                    icon={null}
+                    icon={< Pilcrow className="size-4" />}
                     label="Invisiveis"
                     title="Caracteres invisíveis"
                     command={(ed) => ed.commands.toggleInvisibleCharacters()}
@@ -358,7 +362,7 @@ export default function EditorBar({ editor }: { editor?: Editor | null }) {
             <div className="flex gap-1 px-2">
                 <EditorBtn
                     editor={editor}
-                    icon={null}
+                    icon={<Quote className="size-4" />}
                     label="blockquote"
                     title="Blockquote"
                     command={(ed) =>
@@ -371,7 +375,7 @@ export default function EditorBar({ editor }: { editor?: Editor | null }) {
                 />
                 <EditorBtn
                     editor={editor}
-                    icon={null}
+                    icon={<FileCode className="size-4" />}
                     label="codeblock"
                     title="Code Block"
                     command={(ed) => ed.chain().focus().toggleCodeBlock().run()}
@@ -382,12 +386,23 @@ export default function EditorBar({ editor }: { editor?: Editor | null }) {
                 />
                 <EditorBtn
                     editor={editor}
-                    icon={null}
+                    icon={<TextWrap className="size-4" />}
                     label="quebra de linha"
                     title="Hard Break"
                     command={(ed) => ed.chain().focus().setHardBreak().run()}
                     isActive={(ed) => ed.isActive("hardBreak")}
                     canExecute={(ed) => ed.can().chain().setHardBreak().run()}
+                />
+            </div>
+            <div className="flex gap-1 px-2">
+                <EditorBtn
+                    editor={editor}
+                    icon={< Image className="size-4" />}
+                    label="imagem"
+                    title="imagem"
+                    command={(ed) => ed.chain().focus().setImageUpload().run()}
+                    isActive={(ed) => ed.isActive("imageUpload")}
+                    canExecute={(ed) => ed.can().chain().setImageUpload().run()}
                 />
             </div>
 

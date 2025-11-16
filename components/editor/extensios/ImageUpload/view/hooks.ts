@@ -105,11 +105,14 @@ export const useDropZone = ({
         [uploader],
     );
 
-    const onDragEnter = () => {
+    const onDragEnter = (e?: DragEvent<HTMLDivElement>) => {
+        // preventDefault so the drop event is allowed by the browser
+        e?.preventDefault();
         setDraggedInside(true);
     };
 
-    const onDragLeave = () => {
+    const onDragLeave = (e?: DragEvent<HTMLDivElement>) => {
+        e?.preventDefault();
         setDraggedInside(false);
     };
 

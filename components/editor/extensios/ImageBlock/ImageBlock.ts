@@ -16,6 +16,8 @@ declare module "@tiptap/core" {
                 align: "left" | "center" | "right"
             ) => ReturnType;
             setImageBlockWidth: (width: number) => ReturnType;
+            setImageBlockAlt: (alt: string) => ReturnType;
+            deleteImageBlock: () => ReturnType;
         };
     }
 }
@@ -108,6 +110,12 @@ export const ImageBlock = Image.extend({
                     commands.updateAttributes("imageBlock", {
                         width: `${Math.max(0, Math.min(100, width))}%`,
                     }),
+            
+            setImageBlockAlt:
+                (alt: string) =>
+                ({ commands }: { commands: any }) =>
+                    commands.updateAttributes("imageBlock", { alt }),
+
 
             deleteImageBlock:
                 () =>
