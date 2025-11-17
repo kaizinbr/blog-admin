@@ -42,12 +42,11 @@ import { ImageUpload } from "@/components/editor/extensios/ImageUpload";
 import { ImageBlock } from "@/components/editor/extensios/ImageBlock";
 
 import { uploadImageToServer } from "@/lib/upload";
-import { ResizableImage } from 'tiptap-extension-resizable-image';
+import { ResizableImage } from "tiptap-extension-resizable-image";
 
 import Youtube from "@tiptap/extension-youtube";
 
 import { SpotifyCard } from "@/components/editor/extensios/spotify-card-extensio";
-
 
 export type EditorExtensionsOptions = {
     placeholder?: string;
@@ -186,7 +185,9 @@ export function createExtensions(opts: EditorExtensionsOptions = {}): any[] {
         Typography,
 
         // Custom Spotify card node
-        SpotifyCard,
+        SpotifyCard.configure({
+            HTMLAttributes: { class: "spotify-card-node pb-6" },
+        }),
     ];
 
     return extensions;

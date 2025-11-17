@@ -397,4 +397,8 @@ body {
         cursor: ew-resize;
         cursor: col-resize;
     }
+
+    .node-spotifyCard {
+        margin: 0 0 24px 0;
+    }
 }

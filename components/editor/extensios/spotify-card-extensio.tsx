@@ -10,17 +10,20 @@ export const SpotifyCard = Node.create({
     addPasteRules() {
         return [
             nodePasteRule({
-                find: /(https?:\/\/open\.spotify\.com(?:\/intl(?:-[^\/\s]+|\/[^\/\s]+))?\/track\/[A-Za-z0-9]+)(\S*)?/gi,
+                // aceita tanto /track/:id quanto /album/:id (com eventual segmento /intl...)
+                find: /(https?:\/\/open\.spotify\.com(?:\/intl(?:-[^\/\s]+|\/[^\/\s]+))?\/(?:track|album)\/[A-Za-z0-9]+)(\S*)?/gi,
                 type: this.type,
                 getAttributes: (match) => {
                     // match[1] => URL base até a ID (sem query)
                     // match[2] => query string / sufixo (opcional)
                     const baseUrl = match[1];
                     const suffix = match[2] ?? "";
-                    // se quiser a URL completa com params:
                     const fullUrl = baseUrl + suffix;
-                    console.log("Spotify URL matched:", fullUrl);
-                    return { url: fullUrl };
+                    // extrai se é track ou album
+                    const kindMatch = /\/(track|album)\//i.exec(baseUrl);
+                    const kind = kindMatch ? kindMatch[1].toLowerCase() : null;
+                    console.log("Spotify URL matched:", fullUrl, "kind:", kind);
+                    return { url: fullUrl, kind };
                 },
             }),
         ];
@@ -28,6 +31,7 @@ export const SpotifyCard = Node.create({
     addAttributes() {
         return {
             url: { default: null },
+            kind: { default: null },
         };
     },
 
