@@ -1,12 +1,26 @@
 import { useEffect, useState } from "react";
 import { NodeViewWrapper, NodeViewContent } from "@tiptap/react";
 import ColorThief from "colorthief";
+import type { Editor } from "@tiptap/react";
 import useColors from "@/lib/utils/getColors";
+import { X } from "lucide-react";
 
-export default function SpotifyCardComponent({ node }: any) {
+interface SpotifyCardProps {
+    editor: Editor;
+    // getPos: () => number;
+    node: Node & {
+        attrs: {
+            url: string;
+        };
+    };
+    updateAttributes: (attrs: Record<string, string>) => void;
+}
+
+export default function SpotifyCardComponent({ node, editor, updateAttributes }: SpotifyCardProps) {
     const url = node.attrs.url;
     const [meta, setMeta] = useState<any>(null);
     const colors = useColors(meta?.thumbnail_url);
+    const [isSelected, setIsSelected] = useState(false);
 
     useEffect(() => {
         const trackId = url.split("/track/")[1]?.split("?")[0];
@@ -53,6 +67,18 @@ export default function SpotifyCardComponent({ node }: any) {
                 backgroundPosition: "center",
             }}
         >
+            <button
+                className={`
+                    bg-slate-800/50 rounded-full p-1 border-0 text-white cursor-pointer
+                    hover:bg-slate-800/70 absolute top-2 right-2
+                    transition ease-in-out duration-150
+                `}
+                onClick={() => {
+                    editor.chain().focus().deleteCurrentNode().run();
+                }}
+            >
+                <X size={16} />
+            </button>
             <img
                 src={meta.thumbnail_url}
                 alt={meta.title}

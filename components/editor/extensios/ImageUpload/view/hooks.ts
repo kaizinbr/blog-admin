@@ -106,7 +106,6 @@ export const useDropZone = ({
     );
 
     const onDragEnter = (e?: DragEvent<HTMLDivElement>) => {
-        // preventDefault so the drop event is allowed by the browser
         e?.preventDefault();
         setDraggedInside(true);
     };

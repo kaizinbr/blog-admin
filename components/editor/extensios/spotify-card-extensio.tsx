@@ -43,7 +43,15 @@ export const SpotifyCard = Node.create({
         return ["spotify-card", mergeAttributes(HTMLAttributes)];
     },
 
+    addCommands() {
+        return {
+            deleteCurrentNode: () => ({ commands }) => {
+                return commands.deleteNode("spotifyCard");
+            },
+        };
+    },
+
     addNodeView() {
-        return ReactNodeViewRenderer(SpotifyCardComponent);
+        return ReactNodeViewRenderer(SpotifyCardComponent as any);
     },
 });

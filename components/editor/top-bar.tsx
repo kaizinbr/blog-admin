@@ -1,6 +1,10 @@
 import axios from "axios";
+import { ChevronLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function TopBar({ editor, shorten }: { editor?: any; shorten: string }) {
+    const router = useRouter();
+
     const handleSave = async () => {
         if (!editor) return;
         // shorten,
@@ -29,6 +33,16 @@ export default function TopBar({ editor, shorten }: { editor?: any; shorten: str
 
     return (
         <div className="flex items-center justify-between px-4 h-12">
+            <button className={`
+                cursor-pointer
+                icon-button p-2 rounded-lg hover:bg-slate-100 
+                transition-colors duration-200
+            `} 
+                onClick={() => router.back()}
+                title="Go back"
+            >
+                <ChevronLeft />
+            </button>
             <h1 className="text-lg font-medium">Novo post</h1>
             <div className="flex items-center gap-2">
                 <button

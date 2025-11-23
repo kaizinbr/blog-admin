@@ -6,7 +6,14 @@ import {
     InputBase,
     useCombobox,
 } from "@mantine/core";
-import { ChevronDown } from "lucide-react";
+import {
+    ChevronDown,
+    Heading1,
+    Heading2,
+    Heading3,
+    Heading4,
+    Pilcrow,
+} from "lucide-react";
 import { useState, useEffect } from "react";
 
 import type { Editor } from "@tiptap/react";
@@ -43,10 +50,16 @@ export function SelectFont({
                 const attrs = editor.getAttributes("textStyle") as any;
                 const fontFamily = attrs?.fontFamily;
                 if (fontFamily) {
-                    const selected = data.find((d) => d.value === fontFamily) || null;
-                    setActive(selected ?? { value: fontFamily, label: fontFamily });
+                    const selected =
+                        data.find((d) => d.value === fontFamily) || null;
+                    setActive(
+                        selected ?? { value: fontFamily, label: fontFamily }
+                    );
                 } else {
-                    const unset = data.find((d) => d.value === "unset") || data[0] || null;
+                    const unset =
+                        data.find((d) => d.value === "unset") ||
+                        data[0] ||
+                        null;
                     setActive(unset as any);
                 }
             } catch (e) {
@@ -100,7 +113,7 @@ export function SelectFont({
                     editor
                         .chain()
                         .focus()
-                        .setFontFamily(selected?.value || "unset")
+                        .setFontFamily(selected?.value || "Newsreader")
                         .run();
                 }
             }}
@@ -171,10 +184,12 @@ export function SelectHeading({
                 const attrs = editor.getAttributes("heading") as any;
                 const level = attrs?.level;
                 if (typeof level === "number") {
-                    const selected = data.find((d) => d.value === level) || null;
+                    const selected =
+                        data.find((d) => d.value === level) || null;
                     setActive(selected);
                 } else {
-                    const paragraph = data.find((d) => d.value === 0) || data[0] || null;
+                    const paragraph =
+                        data.find((d) => d.value === 0) || data[0] || null;
                     setActive(paragraph as any);
                 }
             } catch (e) {
@@ -218,7 +233,6 @@ export function SelectHeading({
             offset={12}
             transitionProps={{ duration: 200, transition: "pop" }}
             onOptionSubmit={(val) => {
-                // handle explicit "unset" value first
                 if (val === "0") {
                     const numeric = Number(val);
                     const selected =
@@ -229,7 +243,6 @@ export function SelectHeading({
                     return;
                 }
 
-                // combobox returns a string, convert back to number to find the matching item
                 const numeric = Number(val);
                 const selected = data.find((d) => d.value === numeric) || null;
                 setActive(selected);
@@ -256,13 +269,18 @@ export function SelectHeading({
                         input: `
                             cursor-pointer border-none! text-sm h-8 px-2 rounded-lg!
                             hover:bg-slate-100! transition-colors duration-200
-                            w-28! overflow-hidden! text-ellipsis! text-left!
+                            w-14! overflow-hidden! text-ellipsis! text-left!
+                        `,
+                        section: `
+                            px-1! w-6!
                         `,
                     }}
                 >
-                    {active?.label || (
-                        <Input.Placeholder>Pick value</Input.Placeholder>
-                    )}
+                    {active?.value === 0 && <Pilcrow className="size-4" />}
+                    {active?.value === 1 && <Heading1 className="size-4" />}
+                    {active?.value === 2 && <Heading2 className="size-4" />}
+                    {active?.value === 3 && <Heading3 className="size-4" />}
+                    {active?.value === 4 && <Heading4 className="size-4" />}
                 </InputBase>
             </Combobox.Target>
 
@@ -301,7 +319,7 @@ export function SelectSize({
     const [active, setActive] = useState<{
         value: string;
         label: string;
-    } | null>(data[0] ?? null);
+    } | null>(data[4]);
 
     // keep the select in sync with the editor selection
     useEffect(() => {
@@ -310,11 +328,16 @@ export function SelectSize({
                 const attrs = editor.getAttributes("textStyle") as any;
                 const fontSize = attrs?.fontSize;
                 if (fontSize) {
-                    const selected = data.find((d) => d.value === fontSize) || null;
+                    const selected =
+                        data.find((d) => d.value === fontSize) || null;
+                        console.log("Selected font size:", selected);
                     setActive(selected ?? { value: fontSize, label: fontSize });
                 } else {
                     // no explicit fontSize on selection -> fallback to default (unset)
-                    const unset = data.find((d) => d.value === "unset") || data[0] || null;
+                    const unset =
+                        data.find((d) => d.value === "unset") ||
+                        data[4] ||
+                        null;
                     setActive(unset as any);
                 }
             } catch (e) {
@@ -357,18 +380,14 @@ export function SelectSize({
             withinPortal={false}
             offset={12}
             classNames={{
-                search: "h-6!"
+                search: "h-6!",
             }}
             transitionProps={{ duration: 200, transition: "pop" }}
             onOptionSubmit={(val) => {
-                // handle explicit "unset" value first
                 if (val === "unset") {
-                        editor.chain().focus().unsetFontSize().run();
+                    editor.chain().focus().unsetFontSize().run();
                     return;
                 }
-
-                // combobox returns a string, convert back to number to find the matching item
-            
                 const selected = data.find((d) => d.value === val) || null;
                 setActive(selected);
                 combobox.updateSelectedOptionIndex("active");
@@ -377,7 +396,7 @@ export function SelectSize({
                     editor
                         .chain()
                         .focus()
-                        .setFontSize(selected?.value || "unset")
+                        .setFontSize(selected?.value || "20")
                         .run();
                 }
             }}

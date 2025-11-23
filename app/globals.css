@@ -1,3 +1,5 @@
+
+@import url("https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap");
 @import "tailwindcss";
 
 @theme {
@@ -150,7 +152,7 @@ body {
     background-color: whitesmoke !important;
     color: black !important;
     --brand-primary: rgb(138, 180, 248);
-    --brand-secondary: rgb(193, 168, 226);
+    --brand-secondary: rgb(130, 81, 193);
     --brand-alternative: rgb(136, 186, 191);
     --background-site: rgb(0, 0, 0);
     --background-code: rgb(12, 12, 12);
@@ -188,6 +190,12 @@ body {
     min-height: 100%;
     height: auto;
     width: 100%;
+    font-family: "Newsreader", serif;
+    font-size: 20px;
+    ::selection {
+        background-color: var(--brand-secondary);
+        color: white;
+    }
 
     .node-imageBlock.ProseMirror-selectednode {
         img {

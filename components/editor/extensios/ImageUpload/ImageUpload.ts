@@ -5,7 +5,9 @@ declare module "@tiptap/core" {
     interface Commands<ReturnType> {
         imageUpload: {
             setImageUpload: () => ReturnType;
+            deleteImageUpload: () => ReturnType;
         };
+
     }
 }
 
@@ -44,6 +46,10 @@ export const ImageUpload = Node.create({
                     commands.insertContent(
                         `<div data-type="${this.name}"></div>`
                     ),
+            deleteImageUpload:
+                () =>
+                ({ commands }) =>
+                    commands.deleteNode(this.name),
         };
     },
 

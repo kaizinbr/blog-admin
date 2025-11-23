@@ -34,19 +34,25 @@ import {
     SelectSize,
 } from "@/components/editor/btns/select";
 import LinkBtn from "@/components/editor/btns/link-btn";
+import HighlightBtn from "@/components/editor/btns/highlight-btn";
+import ColorBtn from "@/components/editor/btns/color-btn";
 
 const defaultFonts = [
-    { value: "unset", label: "Padrão" },
+    { value: "Newsreader", label: "Newsreader" },
+    { value: "EB Garamond", label: "Garamond" },
     { value: "arial", label: "Arial" },
     { value: "times-new-roman", label: "Times New Roman" },
+    { value: "courier-new", label: "Courier New" },
+    { value: "georgia", label: "Georgia" },
+    { value: "verdana", label: "Verdana" },
 ];
 
 const heading = [
+    { value: 0, label: "Parágrafo" },
     { value: 1, label: "Título 1" },
     { value: 2, label: "Título 2" },
     { value: 3, label: "Título 3" },
     { value: 4, label: "Título 4" },
-    { value: 0, label: "Parágrafo" },
 ];
 
 const fontSizes = [
@@ -121,7 +127,6 @@ export default function EditorBar({ editor }: { editor?: Editor | null }) {
                     ctx.editor.can().chain().setTextAlign("justify").run() ??
                     false,
 
-                //nodes
                 isBlockquote: ctx.editor.isActive("blockquote") ?? false,
                 canBlockquote:
                     ctx.editor.can().chain().toggleBlockquote().run() ?? false,
@@ -132,7 +137,7 @@ export default function EditorBar({ editor }: { editor?: Editor | null }) {
     return (
         <div
             className={`
-            flex items-center border-b border-b-slate-200 bg-white px-4 py-2 sm:px-6
+            flex items-center justify-center border-b border-b-slate-200 bg-white px-4 py-2 sm:px-6
             gap-1 flex-wrap
             divide-x divide-slate-200
         `}
@@ -205,17 +210,8 @@ export default function EditorBar({ editor }: { editor?: Editor | null }) {
                     canExecute={(ed) => ed.can().chain().toggleCode().run()}
                 />
                 <LinkBtn editor={editor} />
-                <EditorBtn
-                    editor={editor}
-                    icon={<Highlighter className="size-4" />}
-                    label="Highlight"
-                    title="Highlight"
-                    command={(ed) => ed.chain().focus().toggleHighlight().run()}
-                    isActive={(ed) => ed.isActive("highlight")}
-                    canExecute={(ed) =>
-                        ed.can().chain().toggleHighlight().run()
-                    }
-                />
+                <ColorBtn editor={editor} />
+                <HighlightBtn editor={editor} />
             </div>
             
             <div className="flex gap-1 px-2">
@@ -405,103 +401,6 @@ export default function EditorBar({ editor }: { editor?: Editor | null }) {
                     canExecute={(ed) => ed.can().chain().setImageUpload().run()}
                 />
             </div>
-
-                {/* 
-            <div className="flex gap-1 px-2">
-                <EditorBtn
-                    editor={editor}
-                    icon={null}
-                    label="imagem"
-                    title="imagem"
-                    command={(ed) => ed.chain().focus().setImageUpload().run()}
-                    isActive={(ed) => ed.isActive("imageUpload")}
-                    canExecute={(ed) => ed.can().chain().setImageUpload().run()}
-                />
-
-                <EditorBtn
-                    editor={editor}
-                    icon={null}
-                    label="imagem left"
-                    title="imagem left"
-                    command={(ed) =>
-                        ed.chain().focus().setImageBlockAlign("left").run()
-                    }
-                    isActive={(ed) =>
-                        ed.isActive("imageBlockAlign", { align: "left" })
-                    }
-                    canExecute={(ed) =>
-                        ed.can().chain().setImageBlockAlign("left").run()
-                    }
-                />
-                <EditorBtn
-                    editor={editor}
-                    icon={null}
-                    label="imagem center"
-                    title="imagem center"
-                    command={(ed) =>
-                        ed.chain().focus().setImageBlockAlign("center").run()
-                    }
-                    isActive={(ed) =>
-                        ed.isActive("imageBlockAlign", { align: "center" })
-                    }
-                    canExecute={(ed) =>
-                        ed.can().chain().setImageBlockAlign("center").run()
-                    }
-                />
-                <EditorBtn
-                    editor={editor}
-                    icon={null}
-                    label="imagem right"
-                    title="imagem right"
-                    command={(ed) =>
-                        ed.chain().focus().setImageBlockAlign("right").run()
-                    }
-                    isActive={(ed) =>
-                        ed.isActive("imageBlockAlign", { align: "right" })
-                    }
-                    canExecute={(ed) =>
-                        ed.can().chain().setImageBlockAlign("right").run()
-                    }
-                /><EditorBtn
-                    editor={editor}
-                    icon={null}
-                    label="excluir imagem"
-                    title="excluir imagem"
-                    command={(ed) => ed.chain().focus().deleteImageBlock().run()}
-                    isActive={(ed) => ed.isActive("imageBlockAlign", { align: "right" })}
-                    canExecute={(ed) => ed.can().chain().deleteImageBlock().run()}
-                /> 
-            </div>*/}
-
-            {/* <select
-                name="font-size"
-                id="font-size"
-                onChange={(e) => {
-                    const size = e.target.value;
-                    if (size === "unset") {
-                        editor.chain().focus().unsetFontSize().run();
-                    } else {
-                        editor
-                            .chain()
-                            .focus()
-                            .setMark("textStyle", { fontSize: size })
-                            .run();
-                    }
-                }}
-                defaultValue=""
-            >
-                <option value="unset">Tamanho</option>
-                <option value="12px">12</option>
-                <option value="14px">14</option>
-                <option value="16px">16</option>
-                <option value="18px">18</option>
-                <option value="20px">20</option>
-                <option value="24px">24</option>
-                <option value="28px">28</option>
-                <option value="32px">32</option>
-            </select> */}
-
-            {/* <TableControls editor={editor} /> */}
         </div>
     );
 }
